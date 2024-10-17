@@ -6,10 +6,12 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.UIElements;
+using UnityEngine.Rendering;
+using System.Collections;
 
 public class SmoothieArduinoScript : MonoBehaviour
 {
-    //SerialPort sp = new SerialPort("COM6", 9600);
+    SerialPort sp = new SerialPort("COM6", 9600);
 
     public List<String> ingredients = new List<String>();
     private int currentIngredient_1 = 0;
@@ -32,11 +34,17 @@ public class SmoothieArduinoScript : MonoBehaviour
 
     public int jifCounter = 0;
 
+    [SerializeField] public GameObject ingredientPrefab;
+    [SerializeField] public Transform spawnLocation;
+
+    [SerializeField] public AudioClip blenderSound;
+    [SerializeField] public AudioClip selectionSound;
+
     // Start is called before the first frame update
     void Start()
     {
-        //sp.Open();
-        //sp.ReadTimeout = 100;
+        sp.Open();
+        sp.ReadTimeout = 100;
 
         ingredient1Label.text = ingredients[0];
         ingredient2Label.text = ingredients[0];
@@ -61,31 +69,33 @@ public class SmoothieArduinoScript : MonoBehaviour
             ingredient2Image.sprite = jifSprite;
             ingredient3Image.sprite = jifSprite;
         }
-        /*
+        
         if (sp.IsOpen)
         {
             try
             {
-                if (Convert.ToInt32(sp.ReadLine()) == 1)
+                int output = Convert.ToInt32(sp.ReadLine());
+                Debug.Log("SP output: " + output);
+                if (output == 1)
                 {
                     //Ingredient 1
                     Debug.Log("Ingredient 1");
                     currentIngredient_1 = CycleIngredient(1, currentIngredient_1);
 
                 }
-                else if (Convert.ToInt32(sp.ReadLine()) == 2)
+                else if (output == 2)
                 {
                     //Ingredient 2
                     Debug.Log("Ingredient 2");
                     currentIngredient_2 = CycleIngredient(2, currentIngredient_2);
                 }
-                else if (Convert.ToInt32(sp.ReadLine()) == 3)
+                else if (output == 3)
                 {
                     //Ingredient 3
                     Debug.Log("Ingredient 3");
                     currentIngredient_3 = CycleIngredient(3, currentIngredient_3);
                 }
-                else if (Convert.ToInt32(sp.ReadLine()) == 4)
+                else if (output == 4)
                 {
                     //Confirm button
                     Debug.Log("Confirm/Blend");
@@ -96,13 +106,11 @@ public class SmoothieArduinoScript : MonoBehaviour
             {
             }
         }
-        */
-        
     }
 
     private void OnApplicationQuit()
     {
-        //sp.Close();
+        sp.Close();
     }
 
     // Function to cycle through ingredients when a button is pressed
@@ -114,6 +122,8 @@ public class SmoothieArduinoScript : MonoBehaviour
             return -1;
         }
         // Increment the index and loop back to the start if needed
+        playAudio(selectionSound);
+
         currentIndex++;
         jifCounter++;
         if (currentIndex >= ingredients.Count)
@@ -160,16 +170,40 @@ public class SmoothieArduinoScript : MonoBehaviour
             }
 
             //Show animation of ingredients dropping into cup
-            
-            
+            for (int i = 0; i < UnityEngine.Random.Range(2, 4); i++) {
+                GameObject obj1 = Instantiate(ingredientPrefab, spawnLocation);
+                obj1.transform.position += new Vector3(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-5.0f, 5.0f), 0);
+                obj1.GetComponent<SpriteRenderer>().sprite = ingredientSprites[currentIngredient_1];
+            }
+
+            for (int i = 0; i < UnityEngine.Random.Range(2, 4); i++)
+            {
+                GameObject obj2 = Instantiate(ingredientPrefab, spawnLocation);
+                obj2.transform.position += new Vector3(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-5.0f, 5.0f), 0);
+                obj2.GetComponent<SpriteRenderer>().sprite = ingredientSprites[currentIngredient_2];
+            }
+
+            for (int i = 0; i < UnityEngine.Random.Range(2, 4); i++)
+            {
+                GameObject obj3 = Instantiate(ingredientPrefab, spawnLocation);
+                obj3.transform.position += new Vector3(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-5.0f, 5.0f), 0);
+                obj3.GetComponent<SpriteRenderer>().sprite = ingredientSprites[currentIngredient_3];
+            }
+
             //Blend ingredients -> show smoothie color
-            
-            
+            StartCoroutine(BlendSmoothie());
+
             //Calculate and show nutrition facts
-            
+
         }
 
-       
+
+    }
+
+    private IEnumerator BlendSmoothie ()
+    {
+        yield return new WaitForSeconds(5);
+        playAudio(blenderSound);
     }
 
     //Testing with buttons instead of arduino functions
@@ -189,5 +223,11 @@ public class SmoothieArduinoScript : MonoBehaviour
     {
         Debug.Log("Ingredient 3");
         currentIngredient_3 = CycleIngredient(3, currentIngredient_3);
+    }
+
+    private void playAudio(AudioClip clip)
+    {
+        GetComponent<AudioSource>().clip = clip;
+        GetComponent<AudioSource>().Play();
     }
 }
