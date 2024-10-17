@@ -11,7 +11,7 @@ using System.Collections;
 
 public class SmoothieArduinoScript : MonoBehaviour
 {
-    SerialPort sp = new SerialPort("COM6", 9600);
+    SerialPort sp = new SerialPort("COM3", 9600);
 
     public List<String> ingredients = new List<String>();
     private int currentIngredient_1 = 0;
@@ -40,12 +40,11 @@ public class SmoothieArduinoScript : MonoBehaviour
     [SerializeField] public AudioClip blenderSound;
     [SerializeField] public AudioClip selectionSound;
 
+    [SerializeField] public BlenderAnimation anim;
+
     // Start is called before the first frame update
     void Start()
     {
-        sp.Open();
-        sp.ReadTimeout = 100;
-
         ingredient1Label.text = ingredients[0];
         ingredient2Label.text = ingredients[0];
         ingredient3Label.text = ingredients[0];
@@ -53,6 +52,9 @@ public class SmoothieArduinoScript : MonoBehaviour
         ingredient1Image.sprite = ingredientSprites[0];
         ingredient2Image.sprite = ingredientSprites[0];
         ingredient3Image.sprite = ingredientSprites[0];
+
+        sp.Open();
+        sp.ReadTimeout = 100;
     }
 
     // Update is called once per frame
@@ -157,39 +159,16 @@ public class SmoothieArduinoScript : MonoBehaviour
             blendClicked = true;
             if (jifCounter >= 100)
             {
-                selectedIngredients.Add("Jif");
-                selectedIngredients.Add("Jif");
-                selectedIngredients.Add("Jif");
+                spawnIngredients(jifSprite, 0.05f);
+                spawnIngredients(jifSprite, 0.05f);
+                spawnIngredients(jifSprite, 0.05f);
             }
             else
             {
-                //Save current selection of ingredients
-                selectedIngredients.Add(ingredients[currentIngredient_1]);
-                selectedIngredients.Add(ingredients[currentIngredient_2]);
-                selectedIngredients.Add(ingredients[currentIngredient_3]);
+                spawnIngredients(ingredientSprites[currentIngredient_1], 0.25f);
+                spawnIngredients(ingredientSprites[currentIngredient_2], 0.25f);
+                spawnIngredients(ingredientSprites[currentIngredient_3], 0.25f);
             }
-
-            //Show animation of ingredients dropping into cup
-            for (int i = 0; i < UnityEngine.Random.Range(2, 4); i++) {
-                GameObject obj1 = Instantiate(ingredientPrefab, spawnLocation);
-                obj1.transform.position += new Vector3(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-5.0f, 5.0f), 0);
-                obj1.GetComponent<SpriteRenderer>().sprite = ingredientSprites[currentIngredient_1];
-            }
-
-            for (int i = 0; i < UnityEngine.Random.Range(2, 4); i++)
-            {
-                GameObject obj2 = Instantiate(ingredientPrefab, spawnLocation);
-                obj2.transform.position += new Vector3(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-5.0f, 5.0f), 0);
-                obj2.GetComponent<SpriteRenderer>().sprite = ingredientSprites[currentIngredient_2];
-            }
-
-            for (int i = 0; i < UnityEngine.Random.Range(2, 4); i++)
-            {
-                GameObject obj3 = Instantiate(ingredientPrefab, spawnLocation);
-                obj3.transform.position += new Vector3(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-5.0f, 5.0f), 0);
-                obj3.GetComponent<SpriteRenderer>().sprite = ingredientSprites[currentIngredient_3];
-            }
-
             //Blend ingredients -> show smoothie color
             StartCoroutine(BlendSmoothie());
 
@@ -200,10 +179,25 @@ public class SmoothieArduinoScript : MonoBehaviour
 
     }
 
+    private void spawnIngredients(Sprite s, float scale)
+    {
+        for (int i = 0; i < UnityEngine.Random.Range(2, 4); i++)
+        {
+            GameObject obj = Instantiate(ingredientPrefab, spawnLocation);
+            obj.transform.position += new Vector3(UnityEngine.Random.Range(-0.2f, 0.2f), UnityEngine.Random.Range(-5.0f, 5.0f), 0);
+            obj.GetComponent<SpriteRenderer>().sprite = s;
+            obj.transform.localScale = new Vector3(scale, scale, scale);
+            obj.GetComponent<CircleCollider2D>().radius = 2;
+        }
+    }
+
     private IEnumerator BlendSmoothie ()
     {
         yield return new WaitForSeconds(5);
         playAudio(blenderSound);
+        anim.startBlending();
+        yield return new WaitForSeconds(8);
+        anim.stopBlending();
     }
 
     //Testing with buttons instead of arduino functions
