@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BlenderAnimation : MonoBehaviour
 {
+    public int blendForce = 15;
     public bool blend = false;
     // Start is called before the first frame update
     void Start()
@@ -32,7 +33,7 @@ public class BlenderAnimation : MonoBehaviour
         GameObject obj = collision.gameObject;
         if (blend && obj != null)
         {
-            obj.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 12, ForceMode2D.Impulse);
+            obj.GetComponent<Rigidbody2D>().AddForce(Vector2.up * blendForce, ForceMode2D.Impulse);
         }
     }
 }
