@@ -37,6 +37,7 @@ public class SmoothieMaker : MonoBehaviour
         jifSprites = ui.jifSprites;
         iceSprite = ui.iceSprite;
         smoothieObj.SetActive(false);
+        GetComponent<AudioSource>().loop = false;
     }
 
     // Update is called once per frame
@@ -111,6 +112,7 @@ public class SmoothieMaker : MonoBehaviour
 
         if(jif)
         {
+            GetComponent<AudioSource>().loop = true;
             PlayAudio(jifTheme);
             this.jif = true;
             GameObject.Find("ArduinoController").GetComponent<SmoothieArduinoScript>().jifCounter = 0;
@@ -154,6 +156,7 @@ public class SmoothieMaker : MonoBehaviour
         RemoveSpawnedIngredients();
         smoothieObj.SetActive(false);
         GetComponent<AudioSource>().Stop();
+        GetComponent<AudioSource>().loop = false;
         jif = false;
     }
 
