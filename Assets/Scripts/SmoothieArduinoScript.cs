@@ -141,6 +141,13 @@ public class SmoothieArduinoScript : MonoBehaviour
         currentIngredient_3 = CycleIngredient(3, currentIngredient_3);
     }
 
+    public void Button4()
+    {
+        Debug.Log("Confirm/Blend");
+        smoothieMaker.Blend(currentIngredient_1, currentIngredient_2, currentIngredient_3);
+        wait = true;
+    }
+
     private void Reset()
     {
         ui.Reset();
