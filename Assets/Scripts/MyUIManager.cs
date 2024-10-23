@@ -12,6 +12,7 @@ public class MyUIManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI ingredient3Label;
     [SerializeField] public TextMeshProUGUI instructionsLabel;
     [SerializeField] public TextMeshProUGUI nutritionLabel;
+    [SerializeField] public GameObject nutritionObj;
     [Space]
     [SerializeField] public UnityEngine.UI.Image ingredient1Image;
     [SerializeField] public UnityEngine.UI.Image ingredient2Image;
@@ -98,8 +99,8 @@ public class MyUIManager : MonoBehaviour
     public void DisplaySmoothie(int cal)
     {
         instructionsLabel.text = "(click any button to make another smoothie)";
-        nutritionLabel.enabled = true;
-        nutritionLabel.text = "Here's your Smoothie! \n Total Calories: " + cal;
+        nutritionObj.SetActive(true);
+        nutritionLabel.text = "Total Calories: " + cal;
         GameObject.Find("ArduinoController").GetComponent<SmoothieArduinoScript>().smoothieFinished = true;
     }
 
@@ -114,7 +115,7 @@ public class MyUIManager : MonoBehaviour
         ingredient2Image.sprite = ingredientSprites[0];
         ingredient3Image.sprite = ingredientSprites[0];
 
-        nutritionLabel.enabled = false;
+        nutritionObj.SetActive(false);
 
         foreach (GameObject image in splatObj)
         {

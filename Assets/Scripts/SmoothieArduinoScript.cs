@@ -125,27 +125,55 @@ public class SmoothieArduinoScript : MonoBehaviour
     //Testing with buttons instead of arduino functions
     public void Button1()
     {
-        Debug.Log("Ingredient 1");
-        currentIngredient_1 = CycleIngredient(1, currentIngredient_1);
+        if (!wait)
+        {
+            Debug.Log("Ingredient 1");
+            currentIngredient_1 = CycleIngredient(1, currentIngredient_1);
+        }
+        else if (wait && smoothieFinished)
+        {
+            Reset();
+        }
     }
 
     public void Button2()
     {
-        Debug.Log("Ingredient 2");
-        currentIngredient_2 = CycleIngredient(2, currentIngredient_2);
+        if (!wait)
+        {
+            Debug.Log("Ingredient 2");
+            currentIngredient_2 = CycleIngredient(2, currentIngredient_2);
+        }
+        else if (wait && smoothieFinished)
+        {
+            Reset();
+        }
     }
 
     public void Button3()
     {
-        Debug.Log("Ingredient 3");
-        currentIngredient_3 = CycleIngredient(3, currentIngredient_3);
+        if (!wait)
+        {
+            Debug.Log("Ingredient 3");
+            currentIngredient_3 = CycleIngredient(3, currentIngredient_3);
+        }
+        else if (wait && smoothieFinished)
+        {
+            Reset();
+        }
     }
 
     public void Button4()
     {
-        Debug.Log("Confirm/Blend");
-        smoothieMaker.Blend(currentIngredient_1, currentIngredient_2, currentIngredient_3);
-        wait = true;
+        if (!wait)
+        {
+            Debug.Log("Confirm/Blend");
+            smoothieMaker.Blend(currentIngredient_1, currentIngredient_2, currentIngredient_3);
+            wait = true;
+        }
+        else if (wait && smoothieFinished)
+        {
+            Reset();
+        }
     }
 
     private void Reset()

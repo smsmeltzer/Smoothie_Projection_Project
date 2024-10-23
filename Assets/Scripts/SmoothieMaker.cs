@@ -139,7 +139,7 @@ public class SmoothieMaker : MonoBehaviour
         Color c2 = ingredientColors[ingredient2];
         Color c3 = ingredientColors[ingredient3];
 
-        finalColor = c2 + c2 + c3 + Color.black;
+        finalColor = (c1 + c2 + c3) / 3.0f;
         foreach (SpriteRenderer s in smoothieObj.GetComponentsInChildren<SpriteRenderer>())
         {
             s.color = finalColor;
