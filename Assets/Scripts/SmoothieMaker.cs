@@ -16,6 +16,7 @@ public class SmoothieMaker : MonoBehaviour
     [Space]
     [SerializeField] public GameObject ingredientPrefab;
     [SerializeField] public GameObject smoothieObj;
+    [SerializeField] public GameObject logoObj;
     [SerializeField] public Transform spawnLocation;
     [Space]
     [SerializeField] public AudioClip blenderSound;
@@ -37,6 +38,7 @@ public class SmoothieMaker : MonoBehaviour
         jifSprites = ui.jifSprites;
         iceSprite = ui.iceSprite;
         smoothieObj.SetActive(false);
+        logoObj.SetActive(false);
         GetComponent<AudioSource>().loop = false;
     }
 
@@ -102,6 +104,7 @@ public class SmoothieMaker : MonoBehaviour
         // Transition
         ui.Transition(finalColor);
         smoothieObj.SetActive(true);
+        logoObj.SetActive(true);
         yield return new WaitForSeconds(5);
         ui.StopTransition();
         RemoveSpawnedIngredients();
@@ -155,6 +158,7 @@ public class SmoothieMaker : MonoBehaviour
     {
         RemoveSpawnedIngredients();
         smoothieObj.SetActive(false);
+        logoObj.SetActive(false);
         GetComponent<AudioSource>().Stop();
         GetComponent<AudioSource>().loop = false;
         jif = false;
